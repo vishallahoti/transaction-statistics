@@ -3,27 +3,26 @@ package io.statistics.transactions.service;
 import io.statistics.transactions.exception.TimeExtendedException;
 import io.statistics.transactions.models.Transaction;
 import io.statistics.transactions.models.TransactionSummary;
+import io.statistics.transactions.repository.TransactionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.DoubleSummaryStatistics;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
 
-    private final Queue<Transaction> transactions;
-    private final int TOTAL_SECONDS = 60;
+    @Autowired
+    private TransactionRepository transactionRepository;
 
-    public TransactionServiceImpl() {
-        super();
-        this.transactions = new ConcurrentLinkedQueue<>();
-    }
+    private final int TOTAL_SECONDS = 60;
 
     @Override
     public void addTransaction(Transaction transaction) {
@@ -32,11 +31,13 @@ public class TransactionServiceImpl implements TransactionService {
         if (transactionTime.isBefore(currentTime.minusSeconds(TOTAL_SECONDS))) {
             throw new TimeExtendedException("Transaction is older than 60 seconds");
         }
-        transactions.add(transaction);
+        transactionRepository.save(transaction);
     }
 
     @Override
     public TransactionSummary getTransactionSummary() {
+        List<Transaction> transactions = new ArrayList<>();
+        transactionRepository.findAll().forEach(transactions::add);
         if (!transactions.isEmpty()) {
             DoubleSummaryStatistics summary = transactions.stream()
                     .filter(t -> getTransactionTime(t.getTimestamp()).isAfter(getCurrentTime().minusSeconds(TOTAL_SECONDS)))

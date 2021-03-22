@@ -43,13 +43,13 @@ class TransactionsStatisticsApplicationTests {
     }
 
     private List<Transaction> addSuccessfulTransactions() {
-        List<Transaction> successfulTransactions = new ArrayList<Transaction>();
+        List<Transaction> successfulTransactions = new ArrayList<>();
         Instant time = Instant.now();
-        successfulTransactions.add(new Transaction(10.0, time.toEpochMilli()));
-        successfulTransactions.add(new Transaction(20.0, time.toEpochMilli()));
-        successfulTransactions.add(new Transaction(30.0, time.toEpochMilli()));
-        successfulTransactions.add(new Transaction(40.0, time.toEpochMilli()));
-        successfulTransactions.add(new Transaction(50.0, time.toEpochMilli()));
+        successfulTransactions.add(new Transaction("1",10.0, time.toEpochMilli()));
+        successfulTransactions.add(new Transaction("2",20.0, time.toEpochMilli()));
+        successfulTransactions.add(new Transaction("3",30.0, time.toEpochMilli()));
+        successfulTransactions.add(new Transaction("4",40.0, time.toEpochMilli()));
+        successfulTransactions.add(new Transaction("5",50.0, time.toEpochMilli()));
         return successfulTransactions;
     }
 
@@ -67,9 +67,9 @@ class TransactionsStatisticsApplicationTests {
     }
 
     private List<Transaction> errorTransactions() {
-        List<Transaction> errorTransaction = new ArrayList<Transaction>();
+        List<Transaction> errorTransaction = new ArrayList<>();
         Instant time = Instant.now();
-        errorTransaction.add(new Transaction(10.0, time.minusSeconds(65).toEpochMilli()));
+        errorTransaction.add(new Transaction("1",10.0, time.minusSeconds(65).toEpochMilli()));
         return errorTransaction;
     }
 
